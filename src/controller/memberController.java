@@ -20,39 +20,38 @@ public class memberController {
     private ArrayList<Mahasiswa> mahasiswaList = new ArrayList<>();
     private ArrayList<Admin> adminList = new ArrayList<>();
 
-    // Menambah mahasiswa
+    public memberController() {
+        // Menambahkan admin default
+        addAdmin("admin123", "Admin", "Admin Address", "1234567890", "admin123");
+        addMahasiswa("mahasiswa123", "Mahasiswa1", "MHS Address", "1234567890", "mhs123");
+    }
+
     public void addMahasiswa(String studentId, String name, String address, String phoneNumber, String password) {
         Mahasiswa newMahasiswa = new Mahasiswa(studentId, name, address, phoneNumber, password);
         mahasiswaList.add(newMahasiswa);
     }
 
-    // Menambah admin
-    public void addAdmin(String adminId, String name, String address, String phoneNumber) {
-        Admin newAdmin = new Admin(adminId, name, address, phoneNumber);
+    public void addAdmin(String adminId, String name, String address, String phoneNumber, String password) {
+        Admin newAdmin = new Admin(adminId, name, address, phoneNumber, password);
         adminList.add(newAdmin);
     }
 
-    // Menghapus mahasiswa
     public void removeMahasiswa(String studentId) {
         mahasiswaList.removeIf(mahasiswa -> mahasiswa.getStudentId().equals(studentId));
     }
 
-    // Menghapus admin
     public void removeAdmin(String adminId) {
         adminList.removeIf(admin -> admin.getAdminId().equals(adminId));
     }
 
-    // Menampilkan semua mahasiswa
     public ArrayList<Mahasiswa> getAllMahasiswa() {
         return mahasiswaList;
     }
 
-    // Menampilkan semua admin
     public ArrayList<Admin> getAllAdmins() {
         return adminList;
     }
 
-    // Mencari mahasiswa berdasarkan ID
     public Mahasiswa getMahasiswaById(String studentId) {
         for (Mahasiswa mahasiswa : mahasiswaList) {
             if (mahasiswa.getStudentId().equals(studentId)) {
@@ -62,7 +61,6 @@ public class memberController {
         return null;
     }
 
-    // Mencari admin berdasarkan ID
     public Admin getAdminById(String adminId) {
         for (Admin admin : adminList) {
             if (admin.getAdminId().equals(adminId)) {
@@ -70,5 +68,15 @@ public class memberController {
             }
         }
         return null;
+    }
+
+    // Menambahkan fungsi untuk mengecek total mahasiswa
+    public int getTotalMahasiswa() {
+        return mahasiswaList.size();
+    }
+
+    // Menambahkan fungsi untuk mengecek total admin
+    public int getTotalAdmins() {
+        return adminList.size();
     }
 }

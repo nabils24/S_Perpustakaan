@@ -7,6 +7,8 @@
  */
 
 package controller;
+import model.user.Mahasiswa;
+import model.user.Admin;
 
 
 /**
@@ -14,12 +16,23 @@ package controller;
  */
 public class loginController {
 
-    // Method untuk login yang memeriksa kredensial
-    public boolean loginAdmin(String username, String password) {
-        // Logika login bisa diperluas dengan pengecekan database atau list pengguna
-        if (username.equals("admin") && password.equals("admin123")) {
-            return true;  // Login berhasil
+    private memberController memberController;
+
+    public loginController() {
+        this.memberController = new memberController();
+    }
+
+    public String login(String username, String password) {
+        Admin admin = memberController.getAdminById(username);
+        if (admin != null && admin.getPassword().equals(password)) {
+            return "Admin";
         }
-        return false;  // Gagal login
+
+        Mahasiswa mahasiswa = memberController.getMahasiswaById(username);
+        if (mahasiswa != null && mahasiswa.getPassword().equals(password)) {
+            return "Mahasiswa";
+        }
+
+        return "Invalid";
     }
 }
