@@ -19,13 +19,15 @@ public class Author {
     private StringProperty name;
     private StringProperty biography;
     private ListProperty<String> booksWritten;  // Observable list for books written by the author
+    private StringProperty password;
 
     // Constructor
-    public Author(String authorId, String name, String biography) {
+    public Author(String authorId, String name, String biography, String password) {
         this.authorId = new SimpleStringProperty(authorId);
         this.name = new SimpleStringProperty(name);
         this.biography = new SimpleStringProperty(biography);
         this.booksWritten = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
+        this.password = new SimpleStringProperty(password);
     }
 
     // Getters and Setters for StringProperties
@@ -65,6 +67,17 @@ public class Author {
         this.biography.set(biography);
     }
 
+    public String getPassword() {
+        return password.get();
+    }
+
+    public void setPassword(String password) {
+        this.password.set(password);
+    }
+    public StringProperty passwordProperty() {
+        return password;
+    }
+
     // Getter and Setter for ListProperty (books written)
     public ListProperty<String> booksWrittenProperty() {
         return booksWritten;
@@ -91,7 +104,15 @@ public class Author {
     // Method to convert author to string representation
     @Override
     public String toString() {
-        return "Author ID: " + getAuthorId() + ", Name: " + getName() + ", Biography: " + getBiography() + ", Books Written: " + getBooksWritten();
+        // Join the books into a single string for display in TableView
+        String books = String.join(", ", getBooksWritten());
+        return "Author ID: " + getAuthorId() + ", Name: " + getName() + ", Biography: " + getBiography() + ", Books Written: " + books;
+    }
+
+    // Method to get the books as a single string
+    public String getBooksWrittenAsString() {
+        return String.join(", ", getBooksWritten());
     }
 }
+
 
