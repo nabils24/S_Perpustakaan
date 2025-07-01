@@ -33,6 +33,7 @@ import controller.*;
 //pendukung model
 import model.user.Mahasiswa;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -156,6 +157,8 @@ public class adminView {
         return dashboardContent;
     }
 
+
+    /////////MAHASISWA PAGE\\\\\\\\\\
     private VBox createManageMahasiswaContent() {
         VBox manageMahasiswaContent = new VBox(20);
         manageMahasiswaContent.setAlignment(Pos.TOP_CENTER);
@@ -174,25 +177,47 @@ public class adminView {
         buttonBox.setAlignment(Pos.CENTER_LEFT);
 
         Button addButton = new Button("Add");
-        addButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
         Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
         Button deleteButton = new Button("Delete");
-        deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
         Button refreshButton = new Button("Refresh");
+
+        // Styling buttons
+        addButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+        editButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
         refreshButton.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white;");
 
         // Add button action
         addButton.setOnAction(e -> showAddStudentDialog());
 
+        // Edit button action
+        editButton.setOnAction(e -> {
+            Mahasiswa selected = mahasiswaTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                showEditStudentDialog(selected);
+            } else {
+                showAlert("Warning", "Pilih mahasiswa terlebih dahulu", Alert.AlertType.WARNING);
+            }
+        });
+
+        // Delete button action
+        deleteButton.setOnAction(e -> {
+            Mahasiswa selected = mahasiswaTable.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                showDeleteConfirmationDialog(selected);
+            } else {
+                showAlert("Warning", "Pilih mahasiswa terlebih dahulu", Alert.AlertType.WARNING);
+            }
+        });
+
         refreshButton.setOnAction(e -> refreshMahasiswaTable());
 
         buttonBox.getChildren().addAll(addButton, editButton, deleteButton, refreshButton);
-
         manageMahasiswaContent.getChildren().addAll(titleLabel, buttonBox, mahasiswaTable);
         return manageMahasiswaContent;
     }
 
+    //Add
     private void showAddStudentDialog() {
         // Create dialog
         Dialog<Mahasiswa> dialog = new Dialog<>();
@@ -289,15 +314,127 @@ public class adminView {
         });
     }
 
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+
+    //Edit
+    private void showEditStudentDialog(Mahasiswa student) {
+        // Create dialog
+        Dialog<Mahasiswa> dialog = new Dialog<>();
+        dialog.setTitle("Edit Student");
+        dialog.setHeaderText("Update student details");
+
+        // Set dialog buttons
+        ButtonType updateButtonType = new ButtonType("Update", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+        // Create form
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField studentIdField = new TextField(student.getStudentId());
+        studentIdField.setPromptText("Student ID");
+        studentIdField.setDisable(true); // Disable editing of Student ID
+        TextField nameField = new TextField(student.getName());
+        nameField.setPromptText("Name");
+        TextField addressField = new TextField(student.getAddress());
+        addressField.setPromptText("Address");
+        TextField phoneNumberField = new TextField(student.getPhoneNumber());
+        phoneNumberField.setPromptText("Phone Number");
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("New Password (leave blank to keep current)");
+
+        grid.add(new Label("Student ID:"), 0, 0);
+        grid.add(studentIdField, 1, 0);
+        grid.add(new Label("Name:"), 0, 1);
+        grid.add(nameField, 1, 1);
+        grid.add(new Label("Address:"), 0, 2);
+        grid.add(addressField, 1, 2);
+        grid.add(new Label("Phone:"), 0, 3);
+        grid.add(phoneNumberField, 1, 3);
+        grid.add(new Label("New Password:"), 0, 4);
+        grid.add(passwordField, 1, 4);
+
+        // Enable/disable update button depending on whether fields are filled
+        Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+        updateButton.setDisable(true);
+
+        // Validation logic
+        ChangeListener<String> fieldListener = (observable, oldValue, newValue) -> {
+            boolean allFieldsFilled = !nameField.getText().trim().isEmpty()
+                    && !addressField.getText().trim().isEmpty()
+                    && !phoneNumberField.getText().trim().isEmpty();
+            updateButton.setDisable(!allFieldsFilled);
+        };
+
+        nameField.textProperty().addListener(fieldListener);
+        addressField.textProperty().addListener(fieldListener);
+        phoneNumberField.textProperty().addListener(fieldListener);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the name field by default
+        Platform.runLater(nameField::requestFocus);
+
+        // Convert the result to a Mahasiswa object when the update button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == updateButtonType) {
+                return new Mahasiswa(
+                        studentIdField.getText(),
+                        nameField.getText(),
+                        addressField.getText(),
+                        phoneNumberField.getText(),
+                        passwordField.getText() // Password can be empty
+                );
+            }
+            return null;
+        });
+
+        Optional<Mahasiswa> result = dialog.showAndWait();
+
+        result.ifPresent(updatedStudent -> {
+            // Call controller to update the student
+            boolean success = memberController.updateMahasiswa(
+                    updatedStudent.getStudentId(),
+                    updatedStudent.getName(),
+                    updatedStudent.getAddress(),
+                    updatedStudent.getPhoneNumber(),
+                    updatedStudent.getPassword()
+            );
+
+            if (success) {
+                refreshMahasiswaTable();
+                showAlert("Success", "Student updated successfully!", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Error", "Failed to update student. Student ID may not exist.", Alert.AlertType.ERROR);
+            }
+        });
+    }
+
+    //Delete
+    private void showDeleteConfirmationDialog(Mahasiswa mahasiswa) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Konfirmasi Hapus");
+        alert.setHeaderText("Hapus Data Mahasiswa");
+        alert.setContentText("Apakah Anda yakin ingin menghapus mahasiswa:\n" +
+                "NIM: " + mahasiswa.getStudentId() + "\n" +
+                "Nama: " + mahasiswa.getName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean isDeleted = memberController.removeMahasiswa(mahasiswa.getStudentId());
+
+            if (isDeleted) {
+                showAlert("Berhasil", "Data mahasiswa berhasil dihapus", Alert.AlertType.INFORMATION);
+                refreshMahasiswaTable();
+            } else {
+                showAlert("Gagal", "Gagal menghapus data mahasiswa", Alert.AlertType.ERROR);
+            }
+        }
     }
 
 
+    //Setup Table
     private void setupMahasiswaTable() {
         // Clear existing columns
         mahasiswaTable.getColumns().clear();
@@ -342,19 +479,38 @@ public class adminView {
         refreshMahasiswaTable();
     }
 
+    //Refresh
     private void refreshMahasiswaTable() {
-        ObservableList<Mahasiswa> mahasiswaList = FXCollections.observableArrayList(
-                memberController.getAllMahasiswa()
-        );
-        mahasiswaTable.setItems(mahasiswaList);
+        // Bersihkan selection untuk menghindari konflik
+        mahasiswaTable.getSelectionModel().clearSelection();
+
+        // Ambil data terbaru dari controller
+        List<Mahasiswa> latestData = memberController.getAllMahasiswa();
+
+        // Update ObservableList
+        ObservableList<Mahasiswa> data = FXCollections.observableArrayList(latestData);
+        mahasiswaTable.setItems(data);
+
+        // Scroll ke atas tabel setelah refresh
+        mahasiswaTable.scrollTo(0);
     }
 
-        private VBox createManageBooksContent() {
-        VBox manageBooksContent = new VBox();
-        // Add components for managing books here
-        Label label = new Label("Manage Books Content");
-        manageBooksContent.getChildren().add(label);
-        return manageBooksContent;
+    //Alert
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /////////MAHASISWA PAGE\\\\\\\\\\
+    private VBox createManageBooksContent() {
+        VBox settingsContent = new VBox();
+        // Add components for settings here
+        Label label = new Label("Settings Content");
+        settingsContent.getChildren().add(label);
+        return settingsContent;
     }
 
     private VBox createSettingsContent() {
