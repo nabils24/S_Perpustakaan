@@ -23,9 +23,10 @@ public class bookController {
     }
 
     // Fungsi untuk menambah buku baru (Create)
-    public void addBook(String bookCode, String title, String authorId, int yearPublished) {
+    public boolean addBook(String bookCode, String title, String authorId, int yearPublished) {
         Book newBook = new Book(bookCode, title, authorId, yearPublished);
         books.add(newBook);
+        return true;
     }
 
     // Fungsi untuk menampilkan semua buku (Read)
@@ -66,11 +67,14 @@ public class bookController {
     }
 
     // Fungsi untuk menyetujui buku oleh admin (Update)
-    public void approveBook(String bookCode) {
-        Book book = getBookByCode(bookCode);
-        if (book != null) {
-            book.setApproved(true);
+    public Boolean approveBook(String bookCode) {
+        for (Book book : books) {
+            if (book.getBookCode().equals(bookCode)) {
+                book.setApproved(true);  // Mark the book as approved
+                return true;
+            }
         }
+        return false;
     }
 
     // Fungsi untuk menolak buku (Update)
@@ -119,4 +123,6 @@ public class bookController {
         return availableCount;
     }
 }
+
+
 

@@ -6,8 +6,10 @@
  * ===========================================
  */
 
-package view.components.pages.admin;
+package view.components.pages.mahasiswa;
 
+import controller.bookController;
+import controller.memberController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,36 +20,24 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
-//pendukung component
-import view.LibaryView;
-import view.components.helper.*;
-
-//pendukung controller
-import controller.*;
-
-//pendukung model
-import model.user.Mahasiswa;
 import model.management.Book;
 import model.user.Author;
+import model.user.Mahasiswa;
+import view.components.Login;
+import view.components.helper.SidebarButton;
+import view.components.helper.statsCard;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-//pendukung pages
-import view.components.Login;
 
 /**
  * Class adminView - Deskripsi singkat mengenai kelas ini.
  */
-public class adminView {
+public class mahasiswaView {
     private SidebarButton sbButton;
     private statsCard statsCard;
     private memberController memberController;
@@ -55,19 +45,19 @@ public class adminView {
     private TableView<Mahasiswa> mahasiswaTable;
     private TableView<Book> bookTable;
     private TableView<Author> authorTable;
+    private String idMhs;
 
 
-    public adminView(bookController bookController, memberController memberController) {
+    public mahasiswaView(bookController bookController, memberController memberController) {
         this.bookController = bookController;
         this.memberController = memberController;
     }
 
-    public Scene createAdminScene(Stage primaryStage) {
+    public Scene createMahasiswaScene(Stage primaryStage, String id) {
         // Main layout menggunakan BorderPane untuk manajemen tata letak yang lebih baik
         BorderPane mainLayout = new BorderPane();
-        primaryStage.setTitle("Admin");
-
-
+        primaryStage.setTitle("Mahasiswa");
+        this.idMhs = id;
         mainLayout.setStyle("-fx-background-color: #f5f7fa;");
 
         // Sidebar - menggunakan VBox dengan lebar yang ditentukan
@@ -83,7 +73,7 @@ public class adminView {
         logo.setFitWidth(40);
         logo.setFitHeight(40);
 
-        Label titleLabel = new Label("Admin Panel");
+        Label titleLabel = new Label("Halo Mahhasiswa");
         titleLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;");
 
         headerBox.getChildren().addAll(logo, titleLabel);
@@ -93,7 +83,7 @@ public class adminView {
         Label menuTitle = new Label("MAIN MENU");
         menuTitle.setStyle("-fx-font-size: 12; -fx-text-fill: #7f8c8d; -fx-padding: 20 0 5 0;");
 
-        Button manageMahasiswaBtn = sbButton.createSidebarButton("Manage Mahasiswa", "assets/admin/AdminLogo.png");
+        Button manageMahasiswaBtn = sbButton.createSidebarButton("Manage Borrow", "assets/admin/AdminLogo.png");
         Button manageAuthorBtn = sbButton.createSidebarButton("Manage Author", "assets/admin/AdminLogo.png");
         Button manageBooksBtn = sbButton.createSidebarButton("Manage Books", "assets/admin/BookIcon.png");
         Button dashboardBtn = sbButton.createSidebarButton("Dashboard", "assets/admin/DashboardIcon.png");
@@ -164,8 +154,8 @@ public class adminView {
     private VBox createDashboardContent() {
         VBox dashboardContent = new VBox(20);
         dashboardContent.setAlignment(Pos.TOP_CENTER);
-
-        Label welcomeLabel = new Label("Welcome to Admin Dashboard");
+        String name = memberController.getMahasiswaById(idMhs).getName();
+        Label welcomeLabel = new Label("Halo selamat datang kak " +name);
         welcomeLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         GridPane statsGrid = new GridPane();

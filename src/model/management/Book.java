@@ -1,13 +1,11 @@
-/*
- * ===========================================
- * Author   : Nabil Sahsada Suratno
- * Mode     : Java Main Class
- * Nim      : 202410370110357
- * ===========================================
- */
-
 package model.management;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Class book - Deskripsi singkat mengenai kelas ini.
@@ -15,22 +13,22 @@ package model.management;
 public class Book {
 
     // Unique code for the book (e.g., ISBN, Library ID, etc.)
-    private String bookCode;
+    private StringProperty bookCode;
 
     // Title of the book
-    private String title;
+    private StringProperty title;
 
     // Author ID for the book
-    private String authorId;
+    private StringProperty authorId;
 
     // Year in which the book was published
-    private int yearPublished;
+    private IntegerProperty yearPublished;
 
     // Indicates whether the book is approved by admin (for approval logic)
-    private boolean isApproved;
+    private BooleanProperty isApproved;
 
     // Indicates whether the book is available for borrowing
-    private boolean isAvailable;
+    private BooleanProperty isAvailable;
 
     /**
      * Constructor to create a new Book object with specified details.
@@ -42,110 +40,86 @@ public class Book {
      * @param yearPublished The year the book was published
      */
     public Book(String bookCode, String title, String authorId, int yearPublished) {
-        this.bookCode = bookCode;
-        this.title = title;
-        this.authorId = authorId;
-        this.yearPublished = yearPublished;
-        this.isApproved = false;  // By default, the book is not approved
-        this.isAvailable = true;  // By default, the book is available for borrowing
+        this.bookCode = new SimpleStringProperty(bookCode);
+        this.title = new SimpleStringProperty(title);
+        this.authorId = new SimpleStringProperty(authorId);
+        this.yearPublished = new SimpleIntegerProperty(yearPublished);
+        this.isApproved = new SimpleBooleanProperty(false);  // By default, the book is not approved
+        this.isAvailable = new SimpleBooleanProperty(true);  // By default, the book is available for borrowing
     }
 
     // Getters and Setters
 
-    /**
-     * @return the unique book code
-     */
     public String getBookCode() {
+        return bookCode.get();
+    }
+
+    public void setBookCode(String bookCode) {
+        this.bookCode.set(bookCode);
+    }
+
+    public StringProperty bookCodeProperty() {
         return bookCode;
     }
 
-    /**
-     * Sets the unique book code.
-     *
-     * @param bookCode the unique book code to set
-     */
-    public void setBookCode(String bookCode) {
-        this.bookCode = bookCode;
+    public String getTitle() {
+        return title.get();
     }
 
-    /**
-     * @return the title of the book
-     */
-    public String getTitle() {
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
+
+    public StringProperty titleProperty() {
         return title;
     }
 
-    /**
-     * Sets the title of the book.
-     *
-     * @param title the title of the book to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
+    public String getAuthorId() {
+        return authorId.get();
     }
 
-    /**
-     * @return the author ID
-     */
-    public String getAuthorId() {
+    public void setAuthorId(String authorId) {
+        this.authorId.set(authorId);
+    }
+
+    public StringProperty authorIdProperty() {
         return authorId;
     }
 
-    /**
-     * Sets the author ID.
-     *
-     * @param authorId the author ID to set
-     */
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+    public int getYearPublished() {
+        return yearPublished.get();
     }
 
-    /**
-     * @return the year the book was published
-     */
-    public int getYearPublished() {
+    public void setYearPublished(int yearPublished) {
+        this.yearPublished.set(yearPublished);
+    }
+
+    public IntegerProperty yearPublishedProperty() {
         return yearPublished;
     }
 
-    /**
-     * Sets the year the book was published.
-     *
-     * @param yearPublished the year to set
-     */
-    public void setYearPublished(int yearPublished) {
-        this.yearPublished = yearPublished;
+    public boolean isApproved() {
+        return isApproved.get();
     }
 
-    /**
-     * @return whether the book has been approved by an admin
-     */
-    public boolean isApproved() {
+    public void setApproved(boolean approved) {
+        isApproved.set(approved);
+    }
+
+    public BooleanProperty isApprovedProperty() {
         return isApproved;
     }
 
-    /**
-     * Sets the approval status of the book.
-     *
-     * @param approved true if the book is approved, false otherwise
-     */
-    public void setApproved(boolean approved) {
-        isApproved = approved;
-    }
-
-    /**
-     * @return whether the book is available for borrowing
-     */
     public boolean isAvailable() {
-        return isAvailable;
+        return isAvailable.get();
     }
 
-    /**
-     * Sets the availability status of the book.
-     *
-     * @param available true if the book is available for borrowing, false otherwise
-     */
     public void setAvailable(boolean available) {
-        isAvailable = available;
+        isAvailable.set(available);
+    }
+
+    public BooleanProperty isAvailableProperty() {
+        return isAvailable;
     }
 
     /**
@@ -155,7 +129,7 @@ public class Book {
      */
     @Override
     public String toString() {
-        return "Book Code: " + bookCode + ", Title: " + title + ", Author ID: " + authorId + ", Year: " + yearPublished + ", Approved: " + isApproved + ", Available: " + isAvailable;
+        return "Book Code: " + bookCode.get() + ", Title: " + title.get() + ", Author ID: " + authorId.get() +
+                ", Year: " + yearPublished.get() + ", Approved: " + isApproved.get() + ", Available: " + isAvailable.get();
     }
 }
-

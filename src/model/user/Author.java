@@ -7,66 +7,112 @@
  */
 
 package model.user;
+
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
-/**
- * Class Author - Deskripsi singkat mengenai kelas ini.
- */
 public class Author {
-    private String authorId;
-    private String name;
-    private String biography;
-    private ArrayList<String> booksWritten;  // Daftar buku yang ditulis oleh penulis
+    private StringProperty authorId;
+    private StringProperty name;
+    private StringProperty biography;
+    private ListProperty<String> booksWritten;  // Observable list for books written by the author
+    private StringProperty password;
 
-    // Konstruktor
-    public Author(String authorId, String name, String biography) {
-        this.authorId = authorId;
-        this.name = name;
-        this.biography = biography;
-        this.booksWritten = new ArrayList<>();
+    // Constructor
+    public Author(String authorId, String name, String biography, String password) {
+        this.authorId = new SimpleStringProperty(authorId);
+        this.name = new SimpleStringProperty(name);
+        this.biography = new SimpleStringProperty(biography);
+        this.booksWritten = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
+        this.password = new SimpleStringProperty(password);
     }
 
-    // Getters and Setters
-    public String getAuthorId() {
+    // Getters and Setters for StringProperties
+    public StringProperty authorIdProperty() {
         return authorId;
     }
 
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+    public String getAuthorId() {
+        return authorId.get();
     }
 
-    public String getName() {
+    public void setAuthorId(String authorId) {
+        this.authorId.set(authorId);
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name.get();
     }
 
-    public String getBiography() {
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public StringProperty biographyProperty() {
         return biography;
     }
 
-    public void setBiography(String biography) {
-        this.biography = biography;
+    public String getBiography() {
+        return biography.get();
     }
 
-    public ArrayList<String> getBooksWritten() {
+    public void setBiography(String biography) {
+        this.biography.set(biography);
+    }
+
+    public String getPassword() {
+        return password.get();
+    }
+
+    public void setPassword(String password) {
+        this.password.set(password);
+    }
+    public StringProperty passwordProperty() {
+        return password;
+    }
+
+    // Getter and Setter for ListProperty (books written)
+    public ListProperty<String> booksWrittenProperty() {
         return booksWritten;
     }
 
-    public void setBooksWritten(ArrayList<String> booksWritten) {
-        this.booksWritten = booksWritten;
+    public ObservableList<String> getBooksWritten() {
+        return booksWritten.get();
     }
 
-    // Menambah buku yang ditulis oleh penulis
+    public void setBooksWritten(ObservableList<String> booksWritten) {
+        this.booksWritten.set(booksWritten);
+    }
+
+    // Method to add a book to the booksWritten list
     public void addBook(String bookTitle) {
-        this.booksWritten.add(bookTitle);  // Menambah buku yang ditulis penulis
+        this.booksWritten.add(bookTitle);  // Adding the book to the list
     }
 
-    // Menampilkan informasi penulis
+    // Method to remove a book from the booksWritten list
+    public void removeBook(String bookTitle) {
+        this.booksWritten.remove(bookTitle);  // Removing the book from the list
+    }
+
+    // Method to convert author to string representation
+    @Override
     public String toString() {
-        return "Author ID: " + authorId + ", Name: " + name + ", Biography: " + biography + ", Books Written: " + booksWritten;
+        // Join the books into a single string for display in TableView
+        String books = String.join(", ", getBooksWritten());
+        return "Author ID: " + getAuthorId() + ", Name: " + getName() + ", Biography: " + getBiography() + ", Books Written: " + books;
     }
 
+    // Method to get the books as a single string
+    public String getBooksWrittenAsString() {
+        return String.join(", ", getBooksWritten());
+    }
 }
+
+

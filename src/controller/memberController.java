@@ -22,8 +22,8 @@ public class memberController {
     public memberController() {
         // Menambahkan data default
         addAdmin("admin123", "Admin", "Admin Address", "1234567890", "admin123");
-        addMahasiswa("mahasiswa123", "Mahasiswa1", "MHS Address", "1234567890", "mhs123");
-        addAuthor("author123", "Author1", "This is the biography of Author1.");
+        addMahasiswa("mhs123", "Mahasiswa1", "MHS Address", "1234567890", "mhs123");
+        addAuthor("author123", "Author1", "This is the biography of Author1.", "author123");
     }
 
     // Fungsi untuk menambahkan Mahasiswa baru (Create)
@@ -40,8 +40,8 @@ public class memberController {
     }
 
     // Fungsi untuk menambahkan Author baru (Create)
-    public boolean addAuthor(String authorId, String name, String biography) {
-        Author newAuthor = new Author(authorId, name, biography);
+    public boolean addAuthor(String authorId, String name, String biography, String password) {
+        Author newAuthor = new Author(authorId, name, biography, password);
         authorList.add(newAuthor);
         return true;
     }
@@ -103,11 +103,12 @@ public class memberController {
     }
 
     // Fungsi untuk mengupdate data Author (Update)
-    public boolean updateAuthor(String authorId, String newName, String newBiography) {
+    public boolean updateAuthor(String authorId, String newName, String newBiography, String password) {
         Author authorToUpdate = getAuthorById(authorId);
         if (authorToUpdate != null) {
             authorToUpdate.setName(newName);
             authorToUpdate.setBiography(newBiography);
+            authorToUpdate.setPassword(password);
             return true;
         }
         return false;
