@@ -17,6 +17,10 @@ import java.util.ArrayList;
 public class bookController {
     private ArrayList<Book> books = new ArrayList<>();
 
+    public bookController() {
+        addBook("BK001", "Java Programming for Beginners", "Nabil Sahsada Suratno", 2025);
+    }
+
     // Menambah buku yang diajukan oleh penulis
     public void addBook(String bookCode, String title, String authorId, int yearPublished) {
         Book newBook = new Book(bookCode, title, authorId, yearPublished);
@@ -68,5 +72,21 @@ public class bookController {
                 break;
             }
         }
+    }
+
+    // Menambahkan fungsi untuk mengecek total mahasiswa
+    public int getTotalBooks() {
+        return books.size();
+    }
+
+    //Count AvailableBooks
+    public int getAvailableBooks() {
+        int availableCount = 0;
+        for (Book book : books) {
+            if (book.isAvailable()) {  // Memanggil metode isAvailable() dari kelas Book
+                availableCount++;
+            }
+        }
+        return availableCount;
     }
 }
