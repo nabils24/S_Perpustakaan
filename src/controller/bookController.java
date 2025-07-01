@@ -19,7 +19,7 @@ public class bookController {
 
     public bookController() {
         // Menambahkan buku default
-        addBook("BK001", "Java Programming for Beginners", "Nabil Sahsada Suratno", 2025);
+        addBook("BK001", "Java Programming for Beginners", "author123", 2025);
     }
 
     // Fungsi untuk menambah buku baru (Create)
@@ -27,6 +27,16 @@ public class bookController {
         Book newBook = new Book(bookCode, title, authorId, yearPublished);
         books.add(newBook);
         return true;
+    }
+
+    public ArrayList<Book> getBooksByAuthorId(String authorId) {
+        ArrayList<Book> booksByAuthor = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getAuthorId().equals(authorId)) {
+                booksByAuthor.add(book);
+            }
+        }
+        return booksByAuthor;  // Mengembalikan daftar buku yang ditulis oleh penulis dengan authorId yang sesuai
     }
 
     // Fungsi untuk menampilkan semua buku (Read)
