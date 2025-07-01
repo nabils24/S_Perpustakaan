@@ -19,7 +19,7 @@ public class Mahasiswa {
     private String phoneNumber;
     private String password;
 
-    public Mahasiswa(String studentId, String name, String address, String phoneNumberm, String password) {
+    public Mahasiswa(String studentId, String name, String address, String phoneNumber, String password) {
         this.studentId = studentId;
         this.name = name;
         this.address = address;
