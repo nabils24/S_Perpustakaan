@@ -29,6 +29,7 @@ import model.user.Author;
 import view.LibaryView;
 import view.components.pages.admin.*;
 import view.components.pages.mahasiswa.*;
+import view.components.pages.author.*;
 
 import java.util.Optional;
 
@@ -48,6 +49,7 @@ public class Login {
     private TableView<Author> authorTable;
     private adminView adminScene;
     private mahasiswaView mahasiswaScene;
+    private authorView authorScene;
 
     public Parent createLoginContent(Stage primaryStage) {
         // Initialize UI components
@@ -63,6 +65,7 @@ public class Login {
         bookController = LibaryView.bookController; // Assuming you have a static bookController in MainApp
         adminScene = new adminView(bookController, memberController); // Pass controllers to adminView
         mahasiswaScene = new mahasiswaView(bookController, memberController);
+        authorScene = new authorView(bookController, memberController);
         // Set styles
         usernameField.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
         passwordField.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
@@ -96,7 +99,7 @@ public class Login {
             } else if (role.equals("Mahasiswa")) {
                 primaryStage.setScene(mahasiswaScene.createMahasiswaScene(primaryStage, loginResult.getId()));
             } else if (role.equals("Author")) {
-                primaryStage.setScene(createAuthorScene(primaryStage));
+                primaryStage.setScene(authorScene.createAuthorScene(primaryStage, loginResult.getId()));
             } else {
                 showAlert("Error", "Invalid Username or Password.", Alert.AlertType.ERROR);
             }
